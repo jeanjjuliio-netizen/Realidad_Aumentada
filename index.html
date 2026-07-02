@@ -2,39 +2,55 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Proyecto AR - SENA</title>
+  <title>RACHJ - Realidad Aumentada</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
   
   <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 
   <style>
+    /* Pantalla de carga personalizada para RACHJ */
     .arjs-loader {
       height: 100%; width: 100%; position: absolute; top: 0; left: 0;
-      background-color: rgba(0, 0, 0, 0.8); z-index: 9999;
-      display: flex; justify-content: center; align-items: center;
-      font-family: sans-serif; color: white; font-size: 1.25em;
+      background-color: rgba(18, 18, 18, 0.95); z-index: 9999;
+      display: flex; flex-direction: column; justify-content: center; align-items: center;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: white; text-align: center;
+      padding: 20px; box-sizing: border-box;
     }
+    .arjs-loader h1 {
+      margin: 0 0 10px 0; color: #4CAF50; font-size: 2.5em; letter-spacing: 2px;
+    }
+    .arjs-loader p {
+      margin: 0 0 25px 0; color: #bbb; font-size: 1.1em; max-width: 400px;
+    }
+    .arjs-loader .spinner {
+      border: 4px solid rgba(255,255,255,0.1); width: 40px; height: 40px;
+      border-radius: 50%; border-left-color: #4CAF50; animation: spin 1s linear infinite;
+    }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
   </style>
 </head>
 
 <body style="margin: 0; overflow: hidden;">
 
   <div class="arjs-loader" id="loader">
-    <div>Iniciando Cámara, por favor espera...</div>
+    <h1>RACHJ</h1>
+    <p>Realidad Aumentada Carlos, Henor y Jean</p>
+    <div style="color: #aaa; margin-bottom: 15px; font-size: 0.9em;">Iniciando cámara, por favor espera...</div>
+    <div class="spinner"></div>
   </div>
 
   <a-scene
     vr-mode-ui="enabled: false"
-    renderer="logarithmicDepthBuffer: true; precision: medium;"
+    renderer="logarithmicDepthBuffer: true; precision: medium; alpha: true;"
     embedded
     arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: false;"
   >
 
     <a-assets>
-      <img id="asset-silla" src="Activos/silla.png">
-      <img id="asset-balon" src="Activos/balon.png">
-      <video id="asset-video" src="Activos/video.mp4" preload="auto" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
+      <img id="asset-silla" src="Activos/balon.png">
+      <img id="asset-balon" src="Activos/silla.png">
+      <video id="asset-video" src="Activos/video.webm" preload="auto" loop="true" playsinline webkit-playsinline crossorigin="anonymous"></video>
     </a-assets>
 
     <a-marker type="pattern" url="Marcadores/qr.patt" id="marker-qr">
@@ -66,6 +82,7 @@
         rotation="-90 0 0"
         width="1.77"
         height="1"
+        material="transparent: true; alphaTest: 0.5;"
       ></a-video>
     </a-marker>
 
@@ -78,15 +95,15 @@
     const video = document.querySelector('#asset-video');
     const loader = document.querySelector('#loader');
 
-    // Ocultar el aviso de carga al iniciar
+    // Ocultar la pantalla de carga de RACHJ cuando la escena esté lista
     document.querySelector('a-scene').addEventListener('loaded', () => {
       loader.style.display = 'none';
     });
 
-    // Control del video animado
+    // Control del video animado transparente
     markerVideo.addEventListener('markerFound', () => {
       video.currentTime = 0;
-      video.play().catch(err => console.log("La reproducción automática requiere interacción previa:", err));
+      video.play().catch(err => console.log("La reproducción automática requiere interacción:", err));
     });
 
     markerVideo.addEventListener('markerLost', () => {
